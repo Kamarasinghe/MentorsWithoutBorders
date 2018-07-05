@@ -112,6 +112,10 @@ class NavBar extends React.Component {
                 <Link to="/logout" onClick={this.handleLinkClick}>
                   Log Out
                 </Link>
+                <br />
+                <Link to="/searchResults" onClick={this.handleLinkClick}>
+                  Find a Mentor
+                </Link>
               </ul>
             </DropdownContent>
           </Dropdown>
