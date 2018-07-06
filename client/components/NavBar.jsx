@@ -52,7 +52,7 @@ class NavBar extends React.Component {
 
   renderMentor() {
     const { mentor } = this.state;
-    if (mentor) {
+    if (mentor && this.prop.isUserOn) {
       return <Redirect to="/mentor" />;
     } return <Redirect to="/mentee" />;
   }
@@ -60,20 +60,20 @@ class NavBar extends React.Component {
 
   render() {
     const { classes } = this.props;
-    // const { value } = this.state;
+    const { value } = this.state;
     return (
       <div className="navContainer">
-        {/* <Redirect to={`/${value}`} /> */}
+        <Redirect to={`/${value}`} />
         <BottomNavigation
           onChange={this.handleChange}
           className={classes.app}
           style={styles.large}
         >
           <BottomNavigationAction
-            value=""
+            value="home"
             icon={<HomeIcon />}
             component={Link}
-            to="/"
+            to="/user-profile"
           />
           <BottomNavigationAction
             value="chat"
@@ -92,13 +92,12 @@ class NavBar extends React.Component {
               <ul>
                 <FormControl component="fieldset">
                   <div>
-                    {this.renderMentor()}
+                    {/* {this.renderMentor()} */}
                   </div>
                   <FormGroup>
                     <FormControlLabel
                       control={(
                         <Switch
-                          checked={this.state.mentor}
                           onChange={this.switchMode}
                           value="mentor"
                         />
