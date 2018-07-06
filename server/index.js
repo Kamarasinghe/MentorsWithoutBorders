@@ -20,6 +20,7 @@ const { addDataToHeroku } = require('../database/dummyGen/generator')
 const { speechToText, translate } = require('./watson');
 const auth = require('./auth');
 const exampleData = require('./exampleData').exampleMessages;
+const userData = require('../database/dummyGen/users').userList.results;
 // temp stuff
 auth(passport);
 app.use(passport.initialize());
@@ -146,6 +147,11 @@ app.get('/token', (req, res) => {
     identity,
     token: token.toJwt(),
   });
+});
+
+// Send the user data to MentorSearch component
+app.get('/allMentors', (req, res) => {
+  res.send(userData)
 });
 
 app.get('/*', (req, res) => {
