@@ -1,6 +1,10 @@
 /*
   Getting a users word count {
+<<<<<<< da1d3b3b835c1bc7aeecc1e3b649ac14b44b890f
     - Track when a user logs in/logs out
+=======
+    - Track when a user logs/logs out
+>>>>>>> Wrote psuedocode for recommending mentors based on similar vocabulary
     - When user logs out run the functions
 
     - Gather messages user has entered between login and logout
@@ -21,6 +25,7 @@
   Getting match score {
     - Takes in first20 array and currentUser's wordCount
     
+    - Create var to track total score
     - Iterate through first20 
       - If currentWord can be found in wordCount obj
         - Get absolute val of difference
