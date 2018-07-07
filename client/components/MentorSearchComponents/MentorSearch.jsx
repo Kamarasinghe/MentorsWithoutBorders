@@ -60,20 +60,23 @@ class MentorSearch extends Component {
       endAge: '',
       language: '',
       allMentors: [],
+      filteredMentors: [],
       selectedMentors: [],
       page: 0,
       rowsPerPage: 5
     };
 
     this.handleClose = this.handleClose.bind(this);
-    this.handleChangePage = this.handleChangePage.bind(this);
-    this.handleClickOpen = this.handleClickOpen.bind(this);
     this.selectMentors = this.selectMentors.bind(this);
+    this.filterOnlineNow = this.filterOnlineNow.bind(this);
+    this.handleClickOpen = this.handleClickOpen.bind(this);
+    this.handleChangePage = this.handleChangePage.bind(this);
     this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
 
     this.handleChange = name => event => {
       if (name === 'online') {
         this.setState({ [name]: !this.state.online });
+        this.filterOnlineNow();
       } else {
         this.setState({ [name]: event.target.value });
       }
@@ -91,12 +94,23 @@ class MentorSearch extends Component {
     });
   }
 
+  filterOnlineNow() {
+    let mentors = this.state.filteredMentors.length < 1 ? this.state.allMentors : this.state.filteredMentors;
+    let filtered = mentors.filter(mentor => mentor.online === this.state.online );
+
+    this.setState({
+      filteredMentors: filtered
+    });
+  }
+
   selectMentors(pgNum, rows) {
     pgNum = pgNum + 1;
 
+    let mentors = this.state.filteredMentors.length < 1 ? this.state.allMentors : this.state.filteredMentors;
+
     let endNum = pgNum * rows;
     let startNum = endNum - rows;
-    let selectedMentors = this.state.allMentors.slice(startNum, endNum);
+    let selectedMentors = mentors.slice(startNum, endNum);
     
     this.setState({
       selectedMentors: selectedMentors
@@ -141,7 +155,7 @@ class MentorSearch extends Component {
             <Card className={classes.card}>
               <TablePagination
                 component="div"
-                count={this.state.allMentors.length}
+                count={(this.state.filteredMentors.length < 1) ? this.state.allMentors.length : this.state.filteredMentors.length}
                 rowsPerPage={this.state.rowsPerPage}
                 page={this.state.page}
                 backIconButtonProps={{
