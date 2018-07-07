@@ -4,9 +4,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import FormLabel from '@material-ui/core/FormLabel';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -17,10 +15,8 @@ import Input from '@material-ui/core/Input';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
-import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import axios from 'axios';
 
@@ -101,8 +97,6 @@ class MentorSearch extends Component {
     let endNum = pgNum * rows;
     let startNum = endNum - rows;
     let selectedMentors = this.state.allMentors.slice(startNum, endNum);
-
-    console.log('Start num', startNum, 'endNum', endNum)
     
     this.setState({
       selectedMentors: selectedMentors
@@ -133,18 +127,18 @@ class MentorSearch extends Component {
 
     return (
       <div className='mentorsArea'>
-        <Paper className={classes.root} elevation={1}>
-          <Grid container className={classes.root} spacing={16}>
-            <Grid item xs={10}>
-              <Card className={classes.card}>
-                <CardContent> 
-                  {this.state.selectedMentors.map((mentor, idx) => {
-                    return (
-                      <SelectedMentors mentor={mentor} key={idx} />
-                    );
-                  })}
-                </CardContent>
-              </Card>
+        <Grid container className={classes.root} spacing={16}>
+          <Grid item xs={10}>
+            <Card className={classes.card}>
+              <CardContent> 
+                {this.state.selectedMentors.map((mentor, idx) => {
+                  return (
+                    <SelectedMentors mentor={mentor} key={idx} />
+                  );
+                })}
+              </CardContent>
+            </Card>
+            <Card className={classes.card}>
               <TablePagination
                 component="div"
                 count={this.state.allMentors.length}
@@ -157,97 +151,97 @@ class MentorSearch extends Component {
                   'aria-label': 'Next Page',
                 }}
                 onChangePage={this.handleChangePage}
-                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage} 
               />
-            </Grid>
-            <Grid item xs={2}>
-              <Card className={classes.card}>
-                <CardContent>
-                  <div className='onlineStatus'>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={this.state.checkedB}
-                          onChange={this.handleChange('online')}
-                          value="online"
-                          color="primary"
-                        />
-                      }
-                      label="Online Now"
-                    />
-                  </div>
-                  <div className='ageSelector'>
-                    <Button onClick={this.handleClickOpen}>Select an age range</Button>
-                    <Dialog
-                      disableBackdropClick
-                      disableEscapeKeyDown
-                      open={this.state.open}
-                      onClose={this.handleClose}
-                    >
-                      <DialogTitle>Age Range</DialogTitle>
-                      <DialogContent>
-                        <form className={classes.container}>
-                          <FormControl className={classes.formControl}>
-                            <InputLabel htmlFor='age-native-simple'>Min Age</InputLabel>
-                            <Select
-                              native
-                              value={this.state.startAge}
-                              onChange={this.handleChange('startAge')}
-                              input={<Input id='age-native-simple' />}
-                            >
-                              <option value='' />
-                              <option value={10}>Ten</option>
-                              <option value={20}>Twenty</option>
-                              <option value={30}>Thirty</option>
-                            </Select>
-                          </FormControl>
-                          <FormControl className={classes.formControl}>
-                            <InputLabel htmlFor='age-simple'>Max Age</InputLabel>
-                            <Select
-                              value={this.state.endAge}
-                              onChange={this.handleChange('endAge')}
-                              input={<Input id='age-simple' />}
-                            >
-                              <MenuItem value=''>
-                                <em>None</em>
-                              </MenuItem>
-                              <MenuItem value={10}>Ten</MenuItem>
-                              <MenuItem value={20}>Twenty</MenuItem>
-                              <MenuItem value={30}>Thirty</MenuItem>
-                            </Select>
-                          </FormControl>
-                        </form>
-                      </DialogContent>
-                      <DialogActions>
-                        <Button onClick={this.handleClose} color='primary'>
-                          Cancel
-                        </Button>
-                        <Button onClick={this.handleClose} color='primary'>
-                          Ok
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
-                  </div>
-                  <div className='language'>
-                    <InputLabel htmlFor='language-simple'>Language</InputLabel>
-                    <Select
-                      native
-                      value={this.state.language}
-                      onChange={this.handleChange('language')}
-                      input={<Input id='language-simple' />}
-                    >
-                      <option value='' />
-                      <option value={'english'}>English</option>
-                      <option value={'chinese'}>Chinese</option>
-                      <option value={'japanese'}>Japanese</option>
-                      <option value={'korean'}>Korean</option>
-                    </Select>
-                  </div>
-                </CardContent>
-              </Card>
-            </Grid>
+            </Card>
           </Grid>
-        </Paper>
+          <Grid item xs={2}>
+            <Card className={classes.card}>
+              <CardContent>
+                <div className='onlineStatus'>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={this.state.checkedB}
+                        onChange={this.handleChange('online')}
+                        value="online"
+                        color="primary"
+                      />
+                    }
+                    label="Online Now"
+                  />
+                </div>
+                <div className='ageSelector'>
+                  <Button onClick={this.handleClickOpen}>Select an age range</Button>
+                  <Dialog
+                    disableBackdropClick
+                    disableEscapeKeyDown
+                    open={this.state.open}
+                    onClose={this.handleClose}
+                  >
+                    <DialogTitle>Age Range</DialogTitle>
+                    <DialogContent>
+                      <form className={classes.container}>
+                        <FormControl className={classes.formControl}>
+                          <InputLabel htmlFor='age-native-simple'>Min Age</InputLabel>
+                          <Select
+                            native
+                            value={this.state.startAge}
+                            onChange={this.handleChange('startAge')}
+                            input={<Input id='age-native-simple' />}
+                          >
+                            <option value='' />
+                            <option value={10}>Ten</option>
+                            <option value={20}>Twenty</option>
+                            <option value={30}>Thirty</option>
+                          </Select>
+                        </FormControl>
+                        <FormControl className={classes.formControl}>
+                          <InputLabel htmlFor='age-simple'>Max Age</InputLabel>
+                          <Select
+                            value={this.state.endAge}
+                            onChange={this.handleChange('endAge')}
+                            input={<Input id='age-simple' />}
+                          >
+                            <MenuItem value=''>
+                              <em>None</em>
+                            </MenuItem>
+                            <MenuItem value={10}>Ten</MenuItem>
+                            <MenuItem value={20}>Twenty</MenuItem>
+                            <MenuItem value={30}>Thirty</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </form>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={this.handleClose} color='primary'>
+                        Cancel
+                      </Button>
+                      <Button onClick={this.handleClose} color='primary'>
+                        Ok
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+                </div>
+                <div className='language'>
+                  <InputLabel htmlFor='language-simple'>Language</InputLabel>
+                  <Select
+                    native
+                    value={this.state.language}
+                    onChange={this.handleChange('language')}
+                    input={<Input id='language-simple' />}
+                  >
+                    <option value='' />
+                    <option value={'english'}>English</option>
+                    <option value={'chinese'}>Chinese</option>
+                    <option value={'japanese'}>Japanese</option>
+                    <option value={'korean'}>Korean</option>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
       </div>
     );
   }
