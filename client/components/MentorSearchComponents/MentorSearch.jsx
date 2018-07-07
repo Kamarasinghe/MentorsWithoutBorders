@@ -62,14 +62,17 @@ class MentorSearch extends Component {
       allMentors: [],
       filteredMentors: [],
       selectedMentors: [],
+      ageOptions: [],
       page: 0,
       rowsPerPage: 5
     };
 
     this.handleClose = this.handleClose.bind(this);
     this.selectMentors = this.selectMentors.bind(this);
+    this.filterAgeRange = this.filterAgeRange.bind(this);
     this.filterOnlineNow = this.filterOnlineNow.bind(this);
     this.handleClickOpen = this.handleClickOpen.bind(this);
+    this.createAgeOptions = this.createAgeOptions.bind(this);
     this.handleChangePage = this.handleChangePage.bind(this);
     this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
 
@@ -92,6 +95,8 @@ class MentorSearch extends Component {
 
       this.selectMentors(0, 5);
     });
+
+    this.createAgeOptions();
   }
 
   filterOnlineNow() {
@@ -100,6 +105,29 @@ class MentorSearch extends Component {
 
     this.setState({
       filteredMentors: filtered
+    });
+  }
+
+  filterAgeRange() {
+    let mentors = this.state.filteredMentors.length < 1 ? this.state.allMentors : this.state.filteredMentors;
+    let filtered = mentors.filter((mentor) => {
+      return mentor.dob.age >= this.state.startAge && mentor.dob.age <= this.state.endAge;
+    });
+
+    this.setState({
+      filteredMentors: filtered
+    });
+  }
+
+  createAgeOptions() {
+    let ageOptions = [];
+
+    for (let i = 18; i <= 100; i++) {
+      ageOptions.push(<option value={i}>{i}</option>)
+    }
+
+    this.setState({
+      ageOptions: ageOptions
     });
   }
 
@@ -133,6 +161,7 @@ class MentorSearch extends Component {
 
   handleClose() {
     this.setState({ open: false });
+    this.filterAgeRange();
   };
 
   render() {
@@ -205,24 +234,23 @@ class MentorSearch extends Component {
                             input={<Input id='age-native-simple' />}
                           >
                             <option value='' />
-                            <option value={10}>Ten</option>
-                            <option value={20}>Twenty</option>
-                            <option value={30}>Thirty</option>
+                            {this.state.ageOptions.map((option) => {
+                              return option;
+                            })}
                           </Select>
                         </FormControl>
                         <FormControl className={classes.formControl}>
-                          <InputLabel htmlFor='age-simple'>Max Age</InputLabel>
+                          <InputLabel htmlFor='age-native-simple'>Max Age</InputLabel>
                           <Select
+                            native
                             value={this.state.endAge}
                             onChange={this.handleChange('endAge')}
-                            input={<Input id='age-simple' />}
+                            input={<Input id='age-native-simple' />}
                           >
-                            <MenuItem value=''>
-                              <em>None</em>
-                            </MenuItem>
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            <option value='' />
+                            {this.state.ageOptions.map((option) => {
+                              return option;
+                            })}
                           </Select>
                         </FormControl>
                       </form>
