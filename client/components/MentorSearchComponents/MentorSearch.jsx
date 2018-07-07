@@ -114,9 +114,13 @@ class MentorSearch extends Component {
       return mentor.dob.age >= this.state.startAge && mentor.dob.age <= this.state.endAge;
     });
 
-    this.setState({
-      filteredMentors: filtered
-    });
+    if (filtered.length === 0) {
+      alert('Sorry, no results found');
+    } else {
+      this.setState({
+        filteredMentors: filtered
+      });
+    }
   }
 
   createAgeOptions() {
@@ -159,9 +163,15 @@ class MentorSearch extends Component {
     this.setState({ open: true });
   };
 
-  handleClose() {
-    this.setState({ open: false });
-    this.filterAgeRange();
+  handleClose(name) {
+    if (name === 'cancel') {
+      this.setState({ open: false });
+    } else if (this.state.startAge <= this.state.endAge) {
+      this.setState({ open: false });
+      this.filterAgeRange();
+    } else {
+      alert('Please make sure Min Age is less than Max Age');
+    }
   };
 
   render() {
@@ -256,7 +266,7 @@ class MentorSearch extends Component {
                       </form>
                     </DialogContent>
                     <DialogActions>
-                      <Button onClick={this.handleClose} color='primary'>
+                      <Button onClick={() => { this.handleClose('cancel')} }  color='primary'>
                         Cancel
                       </Button>
                       <Button onClick={this.handleClose} color='primary'>
