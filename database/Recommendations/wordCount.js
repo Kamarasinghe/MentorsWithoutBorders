@@ -2,7 +2,6 @@
   Getting a users word count {
     - Track when a user logs in/logs out
     - When user logs out run the functions
-
     - Gather messages user has entered between login and logout
     - Grab the current wordCount object from user database
     - Split messages, delimited by spaces
@@ -14,10 +13,8 @@
     - Else
       - Add the word to wordCount setting it equal to 1
     - Return wordCount object
-
     - Store the wordCount object back into user database
   }
-
   Getting match score {
     - Takes in first20 array and currentUser's wordCount
     
@@ -30,15 +27,12 @@
     
     - Return total score
   }
-
   Providing recommendation based on wordCount {
     - Takes in an array of users
     - Takes in the current users's wordCount
-
     - Turn current user's wordCount into an array of objects
     - Sort array from most used to least
     - Grab first 20 if length greater
-
     - Create a new array recommendedMentors
     - Iterate through each user
       - Pass first20 array and currentUser's wordCount
@@ -72,11 +66,9 @@ let userWordCounts = (wordCounts, messages) => {
   Providing recommendation based on wordCount {
     - Takes in an array of users
     - Takes in the current users's wordCount
-
     - Turn current user's wordCount into an array of objects
     - Sort array from most used to least
     - Grab first 20 if length greater
-
     - Create a new array recommendedMentors
     - Iterate through each user
       - Pass first20 array and currentUser's wordCount
