@@ -252,4 +252,4 @@ module.exports = {
   getRoomMessages,
   setAvgLoggedInTime,
   getCurrentUserCategories
-};
+}; 
