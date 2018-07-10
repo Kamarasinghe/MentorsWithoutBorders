@@ -104,7 +104,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log('⛔ ', socket.id, 'Disconnected from socket');
+    // console.log('⛔ ', users[socket.id], 'Disconnected from socket');
     io.emit('userDisconnect', socket.id);
     console.log(users[socket.id].userId);
     data.logoutUser(users[socket.id].userId);
@@ -222,6 +222,19 @@ app.get('/token', (req, res) => {
 });
 
 // Send the user data to MentorSearch component
+app.get('/recommendation', (req, res) => {
+  let userId = req.session.passport.user.profile.id;
+  data.getAllMentors((results) => {
+    data.findUser(userId, (result) => {
+      res.send({
+        allMentors: results,
+        currentUser: result
+      });
+    });
+  });
+  // res.send('200')
+});
+
 app.get('/allMentors', (req, res) => {
   res.send(userData);
 });
