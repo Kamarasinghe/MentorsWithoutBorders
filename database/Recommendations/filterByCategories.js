@@ -69,7 +69,7 @@ let topicScore = (userTopics, mentorTopics) => {
 
 let scoreByTopic = (currentUserTopics, allMentors) => {
   let userTopics = currentUserTopics;
-  console.log('This is all mentors', allMentors)
+  // console.log('This is all mentors', allMentors)
   
   let filtered = allMentors.filter((mentor) => {
     let mentorId = mentor.id;
@@ -78,22 +78,19 @@ let scoreByTopic = (currentUserTopics, allMentors) => {
 
          
     // });
-
-
     let mentorScore = topicScore(userTopics, [4]);
 
     if (mentorScore !== 0) {
-      return mentor
-    }
+      mentor.score = mentorScore;
 
-    return;
+      return mentor;
+    }
   });
 
-  console.log(filtered)
   return filtered;
 };
 
-let scoreByAge = (mentors, ageRestrict = 5) => {
+let scoreByAge = (currentUser, mentors, ageRestrict = 5) => {
   let userAge = currentUser.age;
 
   mentors.forEach((mentor) => {
@@ -106,11 +103,11 @@ let scoreByAge = (mentors, ageRestrict = 5) => {
   });
 };
 
-let avgActiveTime = (mentors) => {
-  let userAvgActiveTime = currentUser.activeTime;
+let avgActiveTime = (currentUser, mentors) => {
+  let userAvgActiveTime = currentUser.avgLoggedInTime;
 
   let activeTimeFiltered = mentors.filter((mentor) => {
-    let mentorAvgActiveTime = mentor.activeTime;
+    let mentorAvgActiveTime = mentor.avgLoggedInTime;
     let avgTimeDiff = Math.abs(userAvgActiveTime - mentorAvgActiveTime);
     let score = 0;
     
@@ -126,7 +123,7 @@ let avgActiveTime = (mentors) => {
   return activeTimeFiltered;
 };
 
-let avgConvoTime = (mentors) => {
+let avgConvoTime = (currentUser, mentors) => {
   let userAvgConvoTime = currentUser.convoTime;
 
   mentors.forEach((mentor) => {
