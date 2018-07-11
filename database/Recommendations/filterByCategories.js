@@ -12,7 +12,6 @@ const { getCategoryIds } = require('../../server/extractingInfo');
       - Push current mentor into filtered array
     - Return filtered array
   }
-
   Mentors that are within a certain age {
     - Takes in array passed from above function
     - Takes in number to restrict age gap, defaults to 5
@@ -25,7 +24,6 @@ const { getCategoryIds } = require('../../server/extractingInfo');
     
     - Return filtered array
   }
-
   Mentors active around same time {
     - Takes in array passed from above function
     
@@ -35,17 +33,13 @@ const { getCategoryIds } = require('../../server/extractingInfo');
     
     - Return array
   }
-
   Mentors with same avg length of convos {
     - Takes in array passed from above function
-
     - Filter array for mentors with same avg length of convos
     - Subtract currentUser's - currentMentor's avg length of convos
       - Add absolute value of subtraction to score
-
     - Return array
   }
-
   Sort based on score {
     - Takes in array of users
     

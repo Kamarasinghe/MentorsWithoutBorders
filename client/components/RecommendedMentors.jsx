@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { recommendationSystem } from '../../database/Recommendations/recommendationSystem.js';
+import { recommendationSystem } from '../../database/Recommendations/recommendationSystem';
 
 export default class RecommendedMentors extends Component {
   constructor(props) {

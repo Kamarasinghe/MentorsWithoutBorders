@@ -12,30 +12,44 @@ class VideoChatRoom extends Component {
     super(props);
     this.state = {
       language: '',
+      roomId: 320319,
+      translate: '',
+      
     };
     this.handleLanguageSelect = this.handleLanguageSelect.bind(this);
+    this.socket = this.props.socket;
+  }
+
+  componentDidMount() {
+    console.log(this.props);
+    this.socket.emit()
   }
 
   handleLanguageSelect(language) {
-    this.setState({ language });
+    console.log(language);
+    this.setState({
+      language,
+      translate: language,
+    });
+
   }
 
   render() {
     const { name, socket } = this.props;
-    const { language } = this.state;
-    console.log(socket)
+    const { language, roomId, translate } = this.state;
+    console.log(socket);
     return (
 
-      <Grid className="video-chatroom" container justify="center" >
-        {language ? (
+      <Grid className="video-chatroom" container justify="center">
+        {language && roomId ? (
           <React.Fragment>
             <Grid item component={() => <VideoComponent name={name} socket={socket} />} />
-            <Grid item xs={8} component={() => <Chat name={name} socket={socket} />} />
+            <Grid item xs={8} component={() => <Chat translate={translate} language={language} name={name} socket={socket} />} />
           </React.Fragment>
 
         ) : (
-            <Grid item component={() => <LanguageSelector handleLanguageSelect={this.handleLanguageSelect} />} />
-          )}
+          <Grid item component={() => <LanguageSelector handleLanguageSelect={this.handleLanguageSelect} />} />
+        )}
       </Grid>
     );
   }

@@ -20,13 +20,18 @@ const io = socketIo(server);
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
+const twitter = require('./fetchTweets');
+const personality = require('./personality');
 const { addDataToHeroku } = require('../database/dummyGen/generator');
-const { speechToText, translate } = require('./watson');
+const { speechToText, translate, languageSupportList } = require('./watson');
 const auth = require('./auth');
 const exampleData = require('./exampleData').exampleMessages;
 const userData = require('../database/dummyGen/users').userList.results;
 const { getCategoryIds } = require('./extractingInfo');
 // temp stuff
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 auth(passport);
 app.use(passport.initialize());
 app.use(
@@ -36,6 +41,7 @@ app.use(
   }),
 );
 app.use(cookieParser());
+
 // ⬆⬆⬆ end ⬆⬆
 
 speechToText(app);
@@ -48,17 +54,31 @@ const users = {};
 io.on('connection', (socket) => {
   console.log('✅  Socket Connection from id:', socket.id);
   users[socket.id] = {};
+  socket.emit('loginCheck');
   let logInTime = new Date().getHours();
 
   socket.on('userLoggedIn', (client) => {
-    console.log('🔑 ', client.name, 'Logged In');
+    console.log('🔑🔑🔑 ', client.name, 'Logged In', client);
     users[socket.id] = {
       userId: client.userId,
       name: client.name,
       photo: client.photo,
     };
+    console.log('✅✅✅getmy', users[socket.id].userId);
     data.loginUser(client.userId, socket.id);
+    data.getMyMentors(users[socket.id].userId, (mentors) => {
+      console.log('hey', mentors);
+      socket.emit('mentorsOnline', mentors);
+    });
   });
+
+  // socket.on('getMyMentors', () => {
+  //   console.log('✅✅✅✅✅getmymentors', users[socket.id].userId);
+  //   data.getMyMentors(users[socket.id].userId, (mentors) => {
+  //     socket.emit('mentorsOnline', mentors);
+  //   });
+  // });
+
 
   socket.on('new message', (message) => {
     console.log('✉️ socket.new message', message);
@@ -71,16 +91,28 @@ io.on('connection', (socket) => {
     translate(text, socket);
   });
 
+  socket.on('chatRequest', (client) => {
+    // console.log(client)
+    data.getSocketId(client.toUserId, (user) => {
+      const roomName = `${client.userId}${user.id}`;
+      const reqPkg = {
+        from: user.id,
+        roomName,
+      };
+      console.log(user.socket, '⛔⛔ UserSocket @ chatrequest 94');
+      io.to(user.socket).emit('request', reqPkg);
+    });
+  });
+
   socket.on('disconnect', () => {
     // console.log('⛔ ', users[socket.id], 'Disconnected from socket');
     io.emit('userDisconnect', socket.id);
+    console.log(users[socket.id].userId);
     data.logoutUser(users[socket.id].userId);
     let logOutTime = new Date().getHours();
     data.setAvgLoggedInTime(users[socket.id].userId, logInTime, logOutTime);
     delete users[socket.id];
   });
-
-
 });
 
 app.use(cors());
@@ -217,6 +249,30 @@ app.get('/allMentors', (req, res) => {
   res.send(userData);
 });
 
+
+app.post('/result', (req, res) => {
+  console.log(req.body.twitterHandle, '🐣🐣🐣🐣🐣🐣');
+  const handle = req.body.twitterHandle;
+  twitter.getTwitterProfile(handle)
+    .then(profile => twitter.processTweets(profile.twitterHandle))
+    .then(tweets => personality.getPersonality(tweets))
+    .then(personalityProfile => personality.getTextSummary(personalityProfile.personality_profile))
+    .then(summary => res.json(summary))
+    .catch((error) => {
+      res.json({
+        message: error.message,
+      });
+    });
+});
+
+app.get('/result', (req, res) => {
+  console.log(req.body, '🐣🐣🐣🐣🐣dfasdfsdfsdf🐣');
+
+  res.send(JSON.stringify(req.body), 'this is the body!!!');
+  res.end('testing');
+});
+
+
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
   // res.sendFile(`${__dirname}/../client/dist/index.html`);
@@ -226,8 +282,6 @@ app.get('/*', (req, res) => {
 //   // console.log(req.session);s
 //   res.redirect('/');
 // });
-
-
 server.listen(port, () => {
   console.log(`Listening on port: ${port}`);
 });
