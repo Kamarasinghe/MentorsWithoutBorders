@@ -10,26 +10,28 @@ const {
 
 const recommendationSystem = () => {
   axios.get('/recommendation')
-  .then((data) => {
-    console.log('Do I get data back?')
-    let currentUser = data.currentUser;
-    let allMentors = data.allMentors;
-    let userCategories = data.userCategories;
+  .then((res) => {
+    let currentUser = res.data.currentUser;
+    let age = currentUser.age || null;
+    let allMentors = res.data.allMentors;
+    let userCategories = res.data.userCategories;
 
     // Get only the mentors that mentor in topics the 
     // current user is interested in
     let filteredByTopic = scoreByTopic(userCategories, allMentors);
     // Score the mentors based on if they are within a certain
     // age range of the current user
-    scoreByAge(filteredByTopic);
+    if (age) {
+      scoreByAge(currentUser, filteredByTopic);
+    }
     // Score the mentors based on if they are active within
     // the same avg time as current user
-    avgActiveTime(filteredByTopic);
+    avgActiveTime(currentUser, filteredByTopic);
     // Score the mentors based on if they have around the 
     // same avg convo time as the current user
-    avgConvoTime(filteredByTopic);
+    avgConvoTime(currentUser, filteredByTopic);
 
-    console.log(filteredByTopic)
+    console.log('This is filtered by topic', filteredByTopic)
   });
 };
 
