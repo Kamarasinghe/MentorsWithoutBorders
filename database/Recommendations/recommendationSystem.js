@@ -1,4 +1,3 @@
-console.log('Do I make it here')
 const axios = require('axios');
 const { 
   topicScore, 
@@ -8,7 +7,14 @@ const {
   avgConvoTime
 } = require('./filterByCategories');
 
-const recommendationSystem = () => {
+const {
+  userWordCounts,
+  wordCountScore
+} = require('./wordCount');
+
+const recommendationSystem = (callback) => {
+  let filteredByTopic;
+
   axios.get('/recommendation')
   .then((res) => {
     let currentUser = res.data.currentUser;
@@ -18,7 +24,7 @@ const recommendationSystem = () => {
 
     // Get only the mentors that mentor in topics the 
     // current user is interested in
-    let filteredByTopic = scoreByTopic(userCategories, allMentors);
+    filteredByTopic = scoreByTopic(userCategories, allMentors);
     // Score the mentors based on if they are within a certain
     // age range of the current user
     if (age) {
@@ -30,8 +36,15 @@ const recommendationSystem = () => {
     // Score the mentors based on if they have around the 
     // same avg convo time as the current user
     avgConvoTime(currentUser, filteredByTopic);
+    // Create a score based on matching text input between
+    // the current user and mentors
+    wordCountScore(currentUser, filteredByTopic);
 
-    console.log('This is filtered by topic', filteredByTopic)
+    filteredByTopic.sort((a, b) => {
+      return b.score - a.score;
+    });
+  }).then(() => {
+    callback(filteredByTopic);
   });
 };
 
