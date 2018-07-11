@@ -43,23 +43,28 @@
   }
 */
 
-let userWordCounts = (wordCounts, messages) => {
-  let words = messages.split(' ');
+let userWordCounts = (user, messages) => {
+  let joinMessages = messages.join(' ');
+  let words = joinMessages.split(' ');
+  let wordCounts = JSON.parse(JSON.stringify(user.wordCount)) || {};
   let cussWords = [];
 
-  let userWordCount = words.reduce((wordCount, word) => {
+  let updatedWordCount = words.reduce((wordCount, word) => {
+    word = word.toLowerCase();
+
     if (cussWords.indexOf(word) > -1) {
       wordCounts.cussCount++;
     } else if (wordCounts[word]) {
       wordCounts[word]++; 
     } else {
-    	wordCounts[word] = 1
+    	wordCounts[word] = 1;
     }
 
     return wordCount;
   }, wordCounts);
 
-  user.wordCount = userWordCount;
+
+  return updatedWordCount;
 };
 
 /*
@@ -106,7 +111,7 @@ let getWordCountScore = (mentorWordCount, userWordCount) => {
   return score;
 };
 
-let wordCountScore = (mentors) => {
+let wordCountScore = (user, mentors) => {
   let userWordCount = user.wordCount;
 
   mentors.forEach((mentor) => {
