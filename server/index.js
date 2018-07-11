@@ -25,6 +25,7 @@ const { speechToText, translate } = require('./watson');
 const auth = require('./auth');
 const exampleData = require('./exampleData').exampleMessages;
 const userData = require('../database/dummyGen/users').userList.results;
+const { getCategoryIds } = require('./extractingInfo');
 // temp stuff
 auth(passport);
 app.use(passport.initialize());
@@ -47,6 +48,7 @@ const users = {};
 io.on('connection', (socket) => {
   console.log('✅  Socket Connection from id:', socket.id);
   users[socket.id] = {};
+  let logInTime = new Date().getHours();
 
   socket.on('userLoggedIn', (client) => {
     console.log('🔑 ', client.name, 'Logged In');
@@ -70,9 +72,11 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log('⛔ ', users[socket.id], 'Disconnected from socket');
+    // console.log('⛔ ', users[socket.id], 'Disconnected from socket');
     io.emit('userDisconnect', socket.id);
     data.logoutUser(users[socket.id].userId);
+    let logOutTime = new Date().getHours();
+    data.setAvgLoggedInTime(users[socket.id].userId, logInTime, logOutTime);
     delete users[socket.id];
   });
 
@@ -189,6 +193,26 @@ app.get('/token', (req, res) => {
 });
 
 // Send the user data to MentorSearch component
+app.get('/recommendation', (req, res) => {
+  let userId = req.session.passport.user.profile.id;
+  
+  data.findUser(userId, (user) => {
+    let currentUserId = user.id;
+
+    data.getCurrentUserCategories(currentUserId, (datas) => {
+      let categories = getCategoryIds(datas);
+      
+      data.getAllMentors((mentors) => {
+        res.send({
+          userCategories: categories,
+          allMentors: mentors,
+          currentUser: user
+        });
+      });
+    });
+  });
+});
+
 app.get('/allMentors', (req, res) => {
   res.send(userData);
 });
