@@ -1,4 +1,3 @@
-
 require('dotenv').load({ silent: true });
 
 const express = require('express');
@@ -26,7 +25,6 @@ const { speechToText, translate } = require('./watson');
 const auth = require('./auth');
 const exampleData = require('./exampleData').exampleMessages;
 const userData = require('../database/dummyGen/users').userList.results;
-const { getCategoryIds } = require('./extractingInfo');
 // temp stuff
 auth(passport);
 app.use(passport.initialize());
@@ -72,7 +70,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    // console.log('⛔ ', users[socket.id], 'Disconnected from socket');
+    console.log('⛔ ', users[socket.id], 'Disconnected from socket');
     io.emit('userDisconnect', socket.id);
     data.logoutUser(users[socket.id].userId);
     delete users[socket.id];
@@ -191,26 +189,6 @@ app.get('/token', (req, res) => {
 });
 
 // Send the user data to MentorSearch component
-app.get('/recommendation', (req, res) => {
-  let userId = req.session.passport.user.profile.id;
-  
-  data.findUser(userId, (user) => {
-    let currentUserId = user.id;
-
-    data.getCurrentUserCategories(currentUserId, (data) => {
-      let categories = getCategoryIds(data);
-
-      data.getAllMentors((mentors) => {
-        res.send({
-          userCategories: categories,
-          allMentors: mentors,
-          currentUser: user
-        });
-      });
-    });
-  });
-});
-
 app.get('/allMentors', (req, res) => {
   res.send(userData);
 });

@@ -1,3 +1,6 @@
+// const { getCurrentUserCategories } = require('../index.js');
+const { getCategoryIds } = require('../../server/extractingInfo');
+
 /*
   Mentors mentoring in specific topics {
     - Takes in all mentors as array
@@ -64,18 +67,29 @@ let topicScore = (userTopics, mentorTopics) => {
   return score;
 };
 
-let scoreByTopic = (currentUser, allMentors) => {
-  let userTopics = currentUser.topics;
+let scoreByTopic = (currentUserTopics, allMentors) => {
+  let userTopics = currentUserTopics;
+  console.log('This is all mentors', allMentors)
   
   let filtered = allMentors.filter((mentor) => {
-    let mentorTopics = mentor.topics;
-    let mentorScore = topicScore(userTopics, mentorTopics);
+    let mentorId = mentor.id;
+    // let mentorCategoryData = getCurrentUserCategories(mentorId, (data) => {
+    //   let mentorCategories = getCategoryIds(data);
+
+         
+    // });
+
+
+    let mentorScore = topicScore(userTopics, [4]);
 
     if (mentorScore !== 0) {
       return mentor
     }
+
+    return;
   });
 
+  console.log(filtered)
   return filtered;
 };
 

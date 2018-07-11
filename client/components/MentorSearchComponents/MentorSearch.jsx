@@ -19,6 +19,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import axios from 'axios';
+import RecommendedMentors from '../RecommendedMentors';
 
 const styles = theme => ({
   root: {
@@ -294,6 +295,9 @@ class MentorSearch extends Component {
             </Card>
           </Grid>
         </Grid>
+        <div>
+          <RecommendedMentors />
+        </div>
       </div>
     );
   }
