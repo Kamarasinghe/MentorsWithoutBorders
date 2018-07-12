@@ -277,6 +277,7 @@ module.exports = {
   logoutUser,
   setRoom,
   getRoomMessages,
+  getSocketId,
   setAvgLoggedInTime,
   updateUserWordCount,
   getCurrentUserCategories

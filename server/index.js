@@ -20,8 +20,8 @@ const io = socketIo(server);
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
-const twitter = require('./fetchTweets');
-const personality = require('./personality');
+const twitter = require('./twitter');
+const { getPersonality, getTextSummary } = require('./personality');
 const { addDataToHeroku } = require('../database/dummyGen/generator');
 const { speechToText, translate, languageSupportList } = require('./watson');
 const auth = require('./auth');
@@ -72,7 +72,7 @@ io.on('connection', (socket) => {
     console.log('✅✅✅getmy', users[socket.id].userId);
     data.loginUser(client.userId, socket.id);
     data.getMyMentors(users[socket.id].userId, (mentors) => {
-      console.log('hey', mentors);
+      // console.log('hey', mentors);
       socket.emit('mentorsOnline', mentors);
     });
   });
@@ -296,22 +296,14 @@ app.post('/result', (req, res) => {
   console.log(req.body.twitterHandle, '🐣🐣🐣🐣🐣🐣');
   const handle = req.body.twitterHandle;
   twitter.getTwitterProfile(handle)
-    .then(profile => twitter.processTweets(profile.twitterHandle))
-    .then(tweets => personality.getPersonality(tweets))
-    .then(personalityProfile => personality.getTextSummary(personalityProfile.personality_profile))
+    .then(profile => twitter.processTweets(handle))
+    .then(tweets => getPersonality(tweets))
     .then(summary => res.json(summary))
     .catch((error) => {
       res.json({
         message: error.message,
       });
     });
-});
-
-app.get('/result', (req, res) => {
-  console.log(req.body, '🐣🐣🐣🐣🐣dfasdfsdfsdf🐣');
-
-  res.send(JSON.stringify(req.body), 'this is the body!!!');
-  res.end('testing');
 });
 
 
